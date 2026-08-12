@@ -1,5 +1,6 @@
 """SET UP stage — collect candidate details before the interview."""
 
+# --- Imports ---
 import streamlit as st
 
 from config import COMPANY_OPTIONS, LEVEL_OPTIONS, POSITION_OPTIONS
@@ -14,6 +15,7 @@ def render_setup_form() -> None:
     _render_start_button()
 
 
+# --- Personal information fields ---
 def _render_personal_information() -> None:
     st.subheader("Personal Information", divider="rainbow")
 
@@ -33,11 +35,13 @@ def _render_personal_information() -> None:
         key="skills",
     )
 
+    # Live summary of what the user typed
     st.write(f"**Your Name:** {st.session_state.name}")
     st.write(f"**Your Experience:** {st.session_state.experience}")
     st.write(f"**Your Skills:** {st.session_state.skills}")
 
 
+# --- Level / position / company selectors ---
 def _render_company_and_position() -> None:
     st.subheader("Company and Position", divider="rainbow")
 
@@ -64,6 +68,7 @@ def _render_company_and_position() -> None:
     )
 
 
+# --- Start Interview (validate → init chat → enter INTERVIEW stage) ---
 def _render_start_button() -> None:
     if st.button("Start Interview", type="primary"):
         if not all_fields_filled():
@@ -73,6 +78,7 @@ def _render_start_button() -> None:
             )
             return
 
+        # Seed chat with the HR system prompt
         st.session_state.messages = [
             {
                 "role": "system",
@@ -86,6 +92,7 @@ def _render_start_button() -> None:
                 ),
             }
         ]
+        # Reset interview / feedback flags for a fresh run
         st.session_state.user_message_count = 0
         st.session_state.chat_complete = False
         st.session_state.feedback_show = False
